@@ -24,8 +24,7 @@ def update_stops():
             stop = get_stop(line, "tram")
             data.append(stop)
 
-            cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)",
-                            data)
+        cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)", data)
 
     with open("stops_a.txt") as f:
         next(f)
@@ -34,8 +33,7 @@ def update_stops():
             stop = get_stop(line, "bus")
             data.append(stop)
 
-            cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)",
-                            data)
+        cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)", data)
 
     with open("stops_m.txt") as f:
         next(f)
@@ -44,8 +42,7 @@ def update_stops():
             stop = get_stop(line, "mobilis")
             data.append(stop)
 
-            cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)",
-                            data)
+        cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)", data)
 
     con.commit()
     con.close()
