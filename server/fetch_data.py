@@ -1,5 +1,11 @@
 import sqlite3
+import zipfile
+
 from database import DB_FILE
+import httpx
+
+GTFS_URLS = ["https://gtfs.ztp.krakow.pl/GTFS_KRK_T.zip", "https://gtfs.ztp.krakow.pl/GTFS_KRK_A.zip",
+              "https://gtfs.ztp.krakow.pl/GTFS_KRK_M.zip"]
 
 def get_stop(line, stop_type):
     line = line.split(",")
@@ -15,9 +21,20 @@ def get_stop(line, stop_type):
     return data
 
 def update_stops():
+    for url in GTFS_URLS:
+        stop_type = url.split("_")[-1].split(".")[0].lower()
+        r = httpx.get(url)
+        r.raise_for_status()
+
+        with open(f'gtfs_{stop_type}.zip', "wb") as f:
+            f.write(r.content)
+
+        with zipfile.ZipFile(f'gtfs_{stop_type}.zip', 'r') as zip_ref:
+            zip_ref.extract('stops.txt', path=f'gtfs_{stop_type}')
+
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
-    with open("stops_t.txt") as f:
+    with open(f"gtfs_t/stops.txt") as f:
         next(f)
         data = []
         for line in f:
@@ -26,7 +43,7 @@ def update_stops():
 
         cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)", data)
 
-    with open("stops_a.txt") as f:
+    with open("gtfs_a/stops.txt") as f:
         next(f)
         data = []
         for line in f:
@@ -35,7 +52,7 @@ def update_stops():
 
         cur.executemany("INSERT OR REPLACE INTO stops (stop_id, name, lat, lon, type) VALUES (?, ?, ?, ?, ?)", data)
 
-    with open("stops_m.txt") as f:
+    with open("gtfs_m/stops.txt") as f:
         next(f)
         data = []
         for line in f:
