@@ -48,6 +48,31 @@ def get_trip(line, vehicle_type):
     data = (trip_id, route_id, trip_headsign)
     return data
 
+def get_trip_data(trip_id):
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    try:
+        res = cur.execute(
+        """
+            SELECT routes.name, trips.headsign
+            FROM trips
+            INNER JOIN routes ON trips.route_id = routes.route_id
+            WHERE trip_id = ?
+            """,
+            (trip_id,)
+        )
+        row = res.fetchone()
+    finally:
+        con.close()
+
+    if row is None:
+        return None, None
+
+    route_name, trip_headsign = row
+
+    return route_name, trip_headsign
+
 def update_gtfs_static():
     for url in GTFS_URLS:
         stop_type = url.split("_")[-1].split(".")[0].lower()
@@ -108,16 +133,45 @@ def update_gtfs_static():
     con.commit()
     con.close()
 
-# def update_trips():
-#     for url in TRIP_URLS:
-#         vehicle_type = url.split("_")[-1].split(".")[0].lower()
-#         r = httpx.get(url)
-#         r.raise_for_status()
-#
-#         feed = gtfs_realtime_pb2.FeedMessage()
-#         feed.ParseFromString(r.content)
-#
-#         for entity in feed.entity:
-#             print(entity)
-#
-#         return
+def get_departures():
+    departures = {}
+
+    for url in TRIP_URLS:
+        vehicle_type = url.split("_")[-1].split(".")[0].lower()
+        r = httpx.get(url)
+        r.raise_for_status()
+
+        feed = gtfs_realtime_pb2.FeedMessage()
+        feed.ParseFromString(r.content)
+
+        for entity in feed.entity:
+            if entity.trip_update:
+                trip_id = entity.trip_update.trip.trip_id
+                line, headsign = get_trip_data(trip_id)
+
+                if line is None:
+                    continue
+
+                for stop_time_update in entity.trip_update.stop_time_update:
+                    stop_id = stop_time_update.stop_id
+
+                    if stop_time_update.HasField("departure"):
+                        departure = stop_time_update.departure.time
+                    else:
+                        departure = None
+
+                    if departure is None:
+                        continue
+
+                    departures.setdefault(stop_id, []).append({
+                        "time": departure,
+                        "line": line,
+                        "headsign": headsign,
+                    })
+
+    for stop_id in departures:
+        departures[stop_id].sort(
+            key=lambda departure: departure["time"]
+        )
+
+    return departures
