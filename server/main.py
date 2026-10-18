@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database import init_db
-from fetch_data import update_gtfs_static, get_departures
+from fetch_data import update_gtfs_static, fetch_departures, get_departures_from_stop
 from apscheduler.schedulers.background import BackgroundScheduler
 from contextlib import asynccontextmanager
 
@@ -22,4 +22,8 @@ app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 async def root():
-    return get_departures()
+    return fetch_departures()
+
+@app.get("/departures/{stop_id}")
+async def get_departures(stop_id: str):
+    return get_departures_from_stop(stop_id)

@@ -1,4 +1,5 @@
 import sqlite3
+import time
 import zipfile
 
 from google.transit import gtfs_realtime_pb2
@@ -11,6 +12,9 @@ GTFS_URLS = ["https://gtfs.ztp.krakow.pl/GTFS_KRK_T.zip", "https://gtfs.ztp.krak
 
 TRIP_URLS = ["https://gtfs.ztp.krakow.pl/TripUpdates_T.pb", "https://gtfs.ztp.krakow.pl/TripUpdates_A.pb",
              "https://gtfs.ztp.krakow.pl/TripUpdates_M.pb"]
+
+cached_departures = {}
+last_fetch_time = 0
 
 def get_stop(line, stop_type):
     line = line.split(",")
@@ -133,11 +137,15 @@ def update_gtfs_static():
     con.commit()
     con.close()
 
-def get_departures():
+def fetch_departures():
+    global cached_departures, last_fetch_time
+
+    if time.time() - last_fetch_time < 20:
+        return cached_departures
+
     departures = {}
 
     for url in TRIP_URLS:
-        vehicle_type = url.split("_")[-1].split(".")[0].lower()
         r = httpx.get(url)
         r.raise_for_status()
 
@@ -174,4 +182,14 @@ def get_departures():
             key=lambda departure: departure["time"]
         )
 
+    cached_departures = departures.copy()
+    last_fetch_time = time.time()
+
     return departures
+
+def get_departures_from_stop(stop_id):
+    departures = fetch_departures()
+
+    departures_from_stop = departures.get(stop_id, [])
+
+    return departures_from_stop
