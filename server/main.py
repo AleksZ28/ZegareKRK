@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from database import init_db
-from fetch_data import update_gtfs_static, fetch_departures, get_departures_from_stop
+from fetch_data import update_gtfs_static, fetch_departures
 from apscheduler.schedulers.background import BackgroundScheduler
 from contextlib import asynccontextmanager
+
+from services import get_departures_from_stop, get_nearest_stops
 
 
 @asynccontextmanager
@@ -27,3 +29,7 @@ async def root():
 @app.get("/departures/{stop_id}")
 async def get_departures(stop_id: str):
     return get_departures_from_stop(stop_id)
+
+@app.get("/stops")
+async def get_stops(lat: float, lon: float, radius: int):
+    return get_nearest_stops(lat, lon, radius)

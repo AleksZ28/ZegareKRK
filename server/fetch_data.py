@@ -1,9 +1,7 @@
 import sqlite3
 import time
 import zipfile
-
 from google.transit import gtfs_realtime_pb2
-
 from database import DB_FILE
 import httpx
 
@@ -186,10 +184,3 @@ def fetch_departures():
     last_fetch_time = time.time()
 
     return departures
-
-def get_departures_from_stop(stop_id):
-    departures = fetch_departures()
-
-    departures_from_stop = departures.get(stop_id, [])
-
-    return departures_from_stop
