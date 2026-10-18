@@ -28,6 +28,6 @@ def get_nearest_stops(lat, lon, radius):
 def get_departures_from_stop(stop_id):
     departures = fetch_departures()
 
-    departures_from_stop = departures.get(stop_id, [])
+    departures_from_stop = departures.get(stop_id, [])[:10]
 
     return departures_from_stop
