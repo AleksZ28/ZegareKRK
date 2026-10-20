@@ -23,19 +23,20 @@ import androidx.wear.compose.material3.lazy.transformedHeight
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.azurowski.zegarekrk.R
+import com.azurowski.zegarekrk.presentation.components.DepartureCard
 import com.azurowski.zegarekrk.presentation.theme.ZegareKRKTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WearApp("Android")
+            WearApp()
         }
     }
 }
 
 @Composable
-fun WearApp(greetingName: String) {
+fun WearApp() {
     ZegareKRKTheme {
         AppScaffold {
             val listState = rememberTransformingLazyColumnState()
@@ -62,40 +63,39 @@ fun WearApp(greetingName: String) {
                                 Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text(text = stringResource(R.string.hello_world, greetingName))
+                            Text(text = stringResource(R.string.hello_world))
                         }
                     }
                     item {
-                        Button(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier.fillMaxWidth()
-                                .transformedHeight(this, transformationSpec),
+                        DepartureCard(
+                            modifier = Modifier.transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
-                        ) {
-                            Text("Button A")
-                        }
+                            line = "12",
+                            headsign = "Czerwone Maki P+R",
+                            departureTime = "Teraz",
+                            state = "already"
+                        )
                     }
                     item {
-                        Button(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier.fillMaxWidth()
-                                .transformedHeight(this, transformationSpec),
+                        DepartureCard(
+                            modifier = Modifier.transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
-                        ) {
-                            Text("Button B")
-                        }
+                            line = "12",
+                            headsign = "Os. Piastów",
+                            departureTime = "2 min",
+                            state = "soon"
+                        )
                     }
                     item {
-                        Button(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier.fillMaxWidth()
-                                .transformedHeight(this, transformationSpec),
+                        DepartureCard(
+                            modifier = Modifier.transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
-                        ) {
-                            Text("Button C")
-                        }
+                            line = "18",
+                            headsign = "Czerwone Maki P+R",
+                            departureTime = "5 min",
+                            state = "later"
+                        )
                     }
-
                 }
             }
         }
@@ -106,5 +106,5 @@ fun WearApp(greetingName: String) {
 @WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
-    WearApp("Preview Android")
+    WearApp()
 }
