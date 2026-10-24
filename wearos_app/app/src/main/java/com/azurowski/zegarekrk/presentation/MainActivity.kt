@@ -59,7 +59,7 @@ fun WearApp(viewModel: MainViewModel = viewModel()) {
                         Text("More")
                     }
                 },
-            ) { contentPadding -> // ScreenScaffold provides default padding; adjust as needed
+            ) { contentPadding ->
                 TransformingLazyColumn(contentPadding = contentPadding, state = listState) {
                     item {
                         ListHeader(
@@ -70,34 +70,11 @@ fun WearApp(viewModel: MainViewModel = viewModel()) {
                             Text(text = stringResource(R.string.hello_world))
                         }
                     }
-                    item {
+                    items(departures.size) { index ->
                         DepartureCard(
                             modifier = Modifier.transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
-                            line = "12",
-                            headsign = "Czerwone Maki P+R",
-                            departureTime = "Teraz",
-                            state = "already"
-                        )
-                    }
-                    item {
-                        DepartureCard(
-                            modifier = Modifier.transformedHeight(this, transformationSpec),
-                            transformation = SurfaceTransformation(transformationSpec),
-                            line = "12",
-                            headsign = "Os. Piastów",
-                            departureTime = "2 min",
-                            state = "soon"
-                        )
-                    }
-                    item {
-                        DepartureCard(
-                            modifier = Modifier.transformedHeight(this, transformationSpec),
-                            transformation = SurfaceTransformation(transformationSpec),
-                            line = "18",
-                            headsign = "Czerwone Maki P+R",
-                            departureTime = "5 min",
-                            state = "later"
+                            departureData = departures[index]
                         )
                     }
                 }

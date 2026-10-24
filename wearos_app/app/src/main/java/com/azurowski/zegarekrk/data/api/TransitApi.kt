@@ -16,7 +16,7 @@ object TransitApi {
     }
 
     suspend fun getDepartures(stopId: String): List<DepartureDto> {
-        val response: HttpResponse = client.get("http://192.168.0.134:8000/departures/stop_1_1") // local URL
+        val response: HttpResponse = client.get("http://192.168.0.134:8000/departures/$stopId") // local URL
         return response.body()
     }
 }

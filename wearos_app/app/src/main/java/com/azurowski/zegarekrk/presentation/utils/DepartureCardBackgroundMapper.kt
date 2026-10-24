@@ -1,12 +1,13 @@
 package com.azurowski.zegarekrk.presentation.utils
 
 import androidx.compose.ui.graphics.Brush
+import com.azurowski.zegarekrk.presentation.model.DepartureState
 import com.azurowski.zegarekrk.presentation.theme.DepartureCardBackgrounds
 
-fun getDepartureCardBackground(departureState: String): Brush {
-    return when{
-        departureState == "already" -> DepartureCardBackgrounds.Already
-        departureState == "soon" -> DepartureCardBackgrounds.Soon
+fun getDepartureCardBackground(departureState: DepartureState): Brush {
+    return when(departureState) {
+        DepartureState.ALREADY -> DepartureCardBackgrounds.Already
+        DepartureState.SOON -> DepartureCardBackgrounds.Soon
         else -> DepartureCardBackgrounds.Later
     }
 }

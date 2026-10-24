@@ -22,15 +22,17 @@ import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
+import com.azurowski.zegarekrk.presentation.model.DepartureState
+import com.azurowski.zegarekrk.presentation.model.DepartureUiModel
 import com.azurowski.zegarekrk.presentation.utils.getDepartureCardBackground
 
 @Composable
-fun DepartureCard(modifier: Modifier = Modifier, transformation: SurfaceTransformation? = null, line: String, headsign: String, departureTime: String, state: String) {
+fun DepartureCard(modifier: Modifier = Modifier, transformation: SurfaceTransformation? = null, departureData: DepartureUiModel) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
-            .background(brush = getDepartureCardBackground(state)),
+            .background(brush = getDepartureCardBackground(departureData.state)),
         transformation = transformation,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
@@ -43,18 +45,18 @@ fun DepartureCard(modifier: Modifier = Modifier, transformation: SurfaceTransfor
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = line,
+                    text = departureData.line,
                     style = MaterialTheme.typography.displayMedium
                 )
                 Text(
-                    text = headsign,
+                    text = departureData.headsign,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             Text(
-                text = departureTime,
+                text = departureData.departureTime,
                 style = TextStyle(
                     fontWeight = FontWeight.Black,
                     fontSize = 16.sp
@@ -72,6 +74,6 @@ fun DefaultPreview() {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
     ) {
-        DepartureCard(line = "12", headsign = "Os. Piastów", departureTime = "2 min", state = "soon")
+        DepartureCard(departureData = DepartureUiModel("12", "Os. Piastów", "2 min", DepartureState.SOON))
     }
 }
