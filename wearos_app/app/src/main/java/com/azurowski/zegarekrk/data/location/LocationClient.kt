@@ -5,6 +5,7 @@ import android.content.Context
 import android.location.Location
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -14,7 +15,7 @@ class LocationClient(context: Context) {
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     suspend fun getCurrentLocation(): Location? {
         return suspendCancellableCoroutine { continuation ->
-            fusedLocationClient.lastLocation
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location ->
                     if (continuation.isActive) {
                         continuation.resume(location)
