@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.core.splashscreen)
     implementation(libs.guava)
+    implementation(libs.play.services.location)
     implementation(libs.play.services.wearable)
     implementation(libs.protolayout)
     implementation(libs.protolayout.material3)
